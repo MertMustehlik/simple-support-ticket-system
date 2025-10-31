@@ -13,5 +13,5 @@ Route::group(['prefix' => 'tickets', 'middleware' => 'auth:sanctum'], function (
     Route::get('/', [TicketController::class, 'index']);
     Route::post('/', [TicketController::class, 'store']);
     Route::get('/{id}', [TicketController::class, 'show']);
-    Route::patch('/{id}/status', [TicketController::class, 'updateStatus']);
+    Route::middleware('ticket.owner')->patch('/{id}/status', [TicketController::class, 'updateStatus']);
 });
