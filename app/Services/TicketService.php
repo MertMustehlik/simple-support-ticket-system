@@ -7,7 +7,6 @@ use App\Interfaces\TicketInterface;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Cache;
 
-
 class TicketService implements TicketInterface
 {
     public function index(int $perPage = 10, int $page = 1): LengthAwarePaginator

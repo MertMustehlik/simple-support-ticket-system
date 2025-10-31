@@ -2,12 +2,12 @@
 
 namespace App\Models;
 
-use App\Models\TicketLog;
+use App\Observers\TicketObserver;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 
-
+#[ObservedBy(TicketObserver::class)]
 class Ticket extends Model
 {
     public const
