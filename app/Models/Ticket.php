@@ -21,4 +21,13 @@ class Ticket extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public static function getStatuses(): array
+    {
+        return [
+            self::STATUS_OPEN,
+            self::STATUS_IN_PROGRESS,
+            self::STATUS_CLOSED,
+        ];
+    }
 }

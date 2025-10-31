@@ -19,7 +19,7 @@ class TicketService implements TicketInterface
         });
     }
 
-    public function store(array $data)
+    public function store(array $data): Ticket
     {
         return Ticket::create([
             'user_id' => $data['user_id'],
@@ -29,7 +29,15 @@ class TicketService implements TicketInterface
         ]);
     }
 
-    public function show(int $id) {}
+    public function show(int $id): Ticket
+    {
+        return Ticket::query()->with('user')->findOrFail($id);
+    }
 
-    public function updateStatus(array $data) {}
+    public function updateStatus(int $id, string $status): bool
+    {
+        return Ticket::query()->findOrFail($id)->update([
+            'status' => $status
+        ]);
+    }
 }

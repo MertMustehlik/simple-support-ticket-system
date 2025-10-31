@@ -15,4 +15,3 @@ Route::group(['prefix' => 'tickets', 'middleware' => 'auth:sanctum'], function (
     Route::get('/{id}', [TicketController::class, 'show']);
     Route::patch('/{id}/status', [TicketController::class, 'updateStatus']);
 });
-

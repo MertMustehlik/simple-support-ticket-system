@@ -7,7 +7,9 @@ use App\Interfaces\TicketInterface;
 use App\Http\Resources\TicketResource;
 use App\Http\Requests\Ticket\ListRequest;
 use App\Http\Requests\Ticket\StoreRequest;
+use App\Http\Requests\Ticket\UpdateStatusRequest;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Http\JsonResponse;
 
 class TicketController extends Controller
 {
@@ -32,12 +34,27 @@ class TicketController extends Controller
         $ticket = $this->ticketInterface->store($data);
 
         return response()->json([
-            'message' => 'Destek talebiniz başarıyla oluşturuldu.',
+            'message' => 'Destek talebi başarıyla oluşturuldu.',
             'data' => new TicketResource($ticket)
         ], 201);
     }
 
-    public function updateStatus($id) {}
+    public function show($id): JsonResponse
+    {
+        $ticket = $this->ticketInterface->show($id);
 
-    public function show($id) {}
+        return response()->json([
+            'data' => new TicketResource($ticket)
+        ]);
+    }
+
+    public function updateStatus(UpdateStatusRequest $request, $id): JsonResponse
+    {
+        $data = $request->validated();
+        $this->ticketInterface->updateStatus($id, $data['status']);
+
+        return response()->json([
+            'message' => 'Destek talebi başarıyla güncellendi.'
+        ]);
+    }
 }
