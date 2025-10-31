@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Foundation\Application;
 use Illuminate\Auth\AuthenticationException;
@@ -8,6 +7,7 @@ use Illuminate\Validation\ValidationException;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use App\Http\Middleware\EnsureTicketOwner;
+use Illuminate\Http\Exceptions\ThrottleRequestsException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -33,5 +33,12 @@ return Application::configure(basePath: dirname(__DIR__))
             return response()->json([
                 'message' => "Giriş yapılmamış!"
             ], 401);
+        });
+
+        $exceptions->render(function (ThrottleRequestsException $e): JsonResponse {
+            return response()->json([
+                'message' => 'Çok fazla istek yaptınız. Lütfen biraz bekleyin.',
+                'retry_after' => $e->getHeaders()['Retry-After'] ?? null
+            ], 429);
         });
     })->create();
