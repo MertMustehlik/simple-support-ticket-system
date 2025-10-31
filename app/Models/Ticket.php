@@ -11,9 +11,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Ticket extends Model
 {
     public const
-        OPEN = "open",
-        IN_PROGRESS = "in_progress",
-        CLOSED = "closed";
+        STATUS_OPEN = "open",
+        STATUS_IN_PROGRESS = "in_progress",
+        STATUS_CLOSED = "closed";
 
     protected $fillable = ['user_id', 'title', 'description', 'status'];
 
