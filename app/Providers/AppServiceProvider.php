@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Interfaces\AuthInterface;
+use App\Services\AuthService;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -19,6 +21,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+
+        $this->app->bind(AuthInterface::class, AuthService::class);
     }
 }
