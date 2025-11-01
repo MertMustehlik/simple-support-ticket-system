@@ -174,13 +174,13 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6...
 
 ## 💡 Teknoloji Açıklamaları (Redis & RabbitMQ)
 
-Bu projede, modern web uygulamalarının iki temel ihtiyacı olan hız ve verimlilik için Redis ve RabbitMQ kullanılmıştır.
+Bu projede, modern uygulamalarının iki temel ihtiyacı olan hız ve verimlilik için Redis ve RabbitMQ kullanılmıştır.
 
 ### Redis (Önbellekleme - Caching)
 
 -   **Amaç:** Sıkça erişilen verileri (bu projede bilet detayları ve listeleri) veritabanı yerine çok daha hızlı olan RAM (hafıza) üzerinde tutmaktır. Bu sayede veritabanı yükü azalır ve API yanıt süreleri ciddi ölçüde kısalır.
 -   **Kullanım:**
-    -   `GET /api/tickets` (Liste) endpointinden gelen başarılı yanıtlar, **60 saniye** süreyle Redis'te önbelleklenir.
+    -   `GET /api/tickets` (Liste) ve `GET /api/tickets/{id}` (Detay) endpoint'lerinden gelen başarılı yanıtlar, **60 saniye** süreyle Redis'te önbelleklenir.
     -   60 saniye içinde aynı istek tekrar gelirse, sistem veritabanına hiç gitmeden veriyi doğrudan Redis'ten sunar.
 -   **Önbellek Temizleme (Invalidation):**
     -   Verinin güncel kalması kritiktir. Bu nedenle, kullanıcı yeni bir bilet oluşturduğunda (`POST /api/tickets`) veya mevcut bir biletin durumunu güncellediğinde (`PATCH`), ilgili önbellek (cache) anahtarları otomatik olarak silinir.
