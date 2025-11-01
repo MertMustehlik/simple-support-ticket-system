@@ -95,6 +95,7 @@ php artisan serve
 ```
 
 RabbitMQ için ayrı bir terminal açarak:
+
 ```bash
 php artisan queue:work rabbitmq
 ```
@@ -102,6 +103,11 @@ php artisan queue:work rabbitmq
 ## 📚 API Uç Noktaları
 
 ### Authentication
+
+Register ve Login dışındaki tüm uç noktalar Laravel Sanctum ile korunmaktadır. Bu nedenle, korunan endpoint’lere yapılan isteklerde Authorization: Bearer <token> şeklinde geçerli bir Sanctum erişim tokenı gönderilmelidir.
+
+Örnek:
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6...
 
 ##### Register
 
@@ -154,7 +160,6 @@ php artisan queue:work rabbitmq
 
 -   **Endpoint**: `GET /api/tickets/{id}`
 -   **Response**:
-
     -   `data`: (object)
 
 ##### Update Status
@@ -173,21 +178,21 @@ Bu projede, modern web uygulamalarının iki temel ihtiyacı olan hız ve veriml
 
 ### Redis (Önbellekleme - Caching)
 
-* **Amaç:** Sıkça erişilen verileri (bu projede bilet detayları ve listeleri) veritabanı yerine çok daha hızlı olan RAM (hafıza) üzerinde tutmaktır. Bu sayede veritabanı yükü azalır ve API yanıt süreleri ciddi ölçüde kısalır.
-* **Kullanım:**
-    * `GET /api/tickets` (Liste) endpointinden  gelen başarılı yanıtlar, **60 saniye** süreyle Redis'te önbelleklenir.
-    * 60 saniye içinde aynı istek tekrar gelirse, sistem veritabanına hiç gitmeden veriyi doğrudan Redis'ten sunar.
-* **Önbellek Temizleme (Invalidation):**
-    * Verinin güncel kalması kritiktir. Bu nedenle, kullanıcı yeni bir bilet oluşturduğunda (`POST /api/tickets`) veya mevcut bir biletin durumunu güncellediğinde (`PATCH`), ilgili önbellek (cache) anahtarları otomatik olarak silinir.
-    * Bu sayede kullanıcı, bir değişiklik yaptıktan sonraki ilk `GET` isteğinde daima en güncel veriyi görür.
+-   **Amaç:** Sıkça erişilen verileri (bu projede bilet detayları ve listeleri) veritabanı yerine çok daha hızlı olan RAM (hafıza) üzerinde tutmaktır. Bu sayede veritabanı yükü azalır ve API yanıt süreleri ciddi ölçüde kısalır.
+-   **Kullanım:**
+    -   `GET /api/tickets` (Liste) endpointinden gelen başarılı yanıtlar, **60 saniye** süreyle Redis'te önbelleklenir.
+    -   60 saniye içinde aynı istek tekrar gelirse, sistem veritabanına hiç gitmeden veriyi doğrudan Redis'ten sunar.
+-   **Önbellek Temizleme (Invalidation):**
+    -   Verinin güncel kalması kritiktir. Bu nedenle, kullanıcı yeni bir bilet oluşturduğunda (`POST /api/tickets`) veya mevcut bir biletin durumunu güncellediğinde (`PATCH`), ilgili önbellek (cache) anahtarları otomatik olarak silinir.
+    -   Bu sayede kullanıcı, bir değişiklik yaptıktan sonraki ilk `GET` isteğinde daima en güncel veriyi görür.
 
 ### RabbitMQ (Asenkron İşlem Kuyruğu)
 
-* **Amaç:** Kullanıcının beklemesini gerektirmeyen, ancak yapılması gereken "ağır" veya "zaman alıcı" işlemleri (bu projede: loglama) ana işlemden ayırmaktır. Bu, API'nin kullanıcıya anında yanıt vermesini sağlar.
-* **Kullanım (Akış):**
+-   **Amaç:** Kullanıcının beklemesini gerektirmeyen, ancak yapılması gereken "ağır" veya "zaman alıcı" işlemleri (bu projede: loglama) ana işlemden ayırmaktır. Bu, API'nin kullanıcıya anında yanıt vermesini sağlar.
+-   **Kullanım (Akış):**
     1.  Kullanıcı bir biletin durumunu `PATCH /api/tickets/{id}/status` endpoint'i ile günceller.
     2.  Sistem, değişikliği anında veritabanındaki `tickets` tablosuna yazar ve kullanıcıya "Başarılı" yanıtını döner (Hızlı yanıt).
     3.  Aynı anda, bu değişikliği loglamak için bir `TicketStatusUpdated` olayı (Event) tetiklenir.
     4.  Bu olayı dinleyen bir 'Listener', "Loglama İşini" (Queued Job) alır ve RabbitMQ kuyruğuna gönderir.
     5.  Arka planda çalışan `php artisan queue:work` komutu (worker) bu işi kuyruktan alır ve `ticket_logs` tablosuna kaydı ekler.
-* **Sonuç:** Kullanıcı, loglama işleminin bitmesini bir saniye bile beklemez. Loglama işlemi (örn: `ticket_logs` tablosu kilitlendiği için) o an başarısız olsa bile, bu durum kullanıcının ana isteğini etkilemez ve işlem kuyrukta yeniden denenmek üzere bekler.
+-   **Sonuç:** Kullanıcı, loglama işleminin bitmesini bir saniye bile beklemez. Loglama işlemi (örn: `ticket_logs` tablosu kilitlendiği için) o an başarısız olsa bile, bu durum kullanıcının ana isteğini etkilemez ve işlem kuyrukta yeniden denenmek üzere bekler.
