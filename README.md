@@ -1,59 +1,193 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Basit Destek Bileti Sistemi (Laravel)
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Bu proje, Laravel Geliştirici Teknik Değerlendirmesi için oluşturulmuş minimal bir Destek Bileti Yönetim Sistemi API'sidir.
 
-## About Laravel
+Proje, Laravel Sanctum (Authentication), Redis (Caching) ve RabbitMQ (Asynchronous Jobs) kullanarak temel CRUD işlemlerini, yetkilendirmeyi ve performans optimizasyonlarını içermektedir.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 🛠️ Kurulum Adımları
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+1.  **Projeyi Klonlayın:**
 
-## Learning Laravel
+    ```bash
+    git clone https://github.com/MertMustehlik/simple-support-ticket-system.git
+    cd simple-support-ticket-system
+    ```
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+2.  **Bağımlılıkları Yükleyin:**
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+    ```bash
+    composer install
+    ```
 
-## Laravel Sponsors
+3.  **.env Dosyasını Oluşturun:**
+    `.env.example` dosyasını kopyalayarak `.env` adında yeni bir dosya oluşturun.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+    ```bash
+    cp .env.example .env
+    ```
 
-### Premium Partners
+4.  **.env Dosyasını Yapılandırın:**
+    Oluşturduğunuz `.env` dosyasını açın ve aşağıdaki bölümleri kendi yerel ortamınıza göre doldurun.
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+    **Veritabanı (Database):**
 
-## Contributing
+    ```env
+    DB_CONNECTION=mysql
+    DB_HOST=127.0.0.1
+    DB_PORT=3306
+    DB_DATABASE=laravel_ticket_system
+    DB_USERNAME=root
+    DB_PASSWORD=password
+    ```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+    **Redis:**
 
-## Code of Conduct
+    ```env
+    REDIS_HOST=127.0.0.1
+    REDIS_PASSWORD=null
+    REDIS_PORT=6379
+    ```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+    **RabbitMQ (Kuyruk):**
 
-## Security Vulnerabilities
+    ```env
+    QUEUE_CONNECTION=rabbitmq
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+    RABBITMQ_HOST=127.0.0.1
+    RABBITMQ_PORT=5672
+    RABBITMQ_USER=guest
+    RABBITMQ_PASSWORD=guest
+    RABBITMQ_VHOST=/
+    ```
 
-## License
+5.  **Uygulama Anahtarını Oluşturun:**
+    ```bash
+    php artisan key:generate
+    ```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+---
+
+## 🗄️ Veritabanı (Migration & Seed)
+
+1.  **Migration:**
+    Veritabanı tablolarını oluşturmak için aşağıdaki komutu çalıştırın.
+
+    ```bash
+    php artisan migrate
+    ```
+
+2.  **Seed:**
+    Örnek kullanıcılar ve destek talepleri oluşturmak için seeder'ı çalıştırabilirsiniz.
+    ```bash
+    php artisan db:seed
+    ```
+
+---
+
+## 🏁 Uygulamayı Çalıştırma
+
+Uygulamayı yerel sunucuda başlatmak için:
+
+```bash
+php artisan serve
+```
+
+RabbitMQ için ayrı bir terminal açarak:
+```bash
+php artisan queue:work rabbitmq
+```
+
+## 📚 API Uç Noktaları
+
+### Authentication
+
+##### Register
+
+-   **Endpoint**: `POST /api/register`
+-   **Request Body**:
+    -   `name`: (string) Kullanıcı adı.
+    -   `email`: (string) Kullanıcı e-posta adresi.
+    -   `password`: (string) Kullanıcı şifresi.
+    -   `password_confirmation`: (string) Kullanıcı şifresi onaylama.
+-   **Response**:
+    -   `user`: (object)
+    -   `token`: (string)
+
+##### Login
+
+-   **Endpoint**: `POST /api/login`
+-   **Request Body**:
+    -   `email`: (string) Kullanıcı e-posta adresi.
+    -   `password`: (string) Kullanıcı şifresi.
+-   **Response**:
+    -   `user`: (object)
+    -   `token`: (string)
+
+---
+
+### Tickets
+
+##### List
+
+-   **Endpoint**: `GET /api/tickets`
+-   **Query Params**:
+    -   `per_page`: (int, optional) Sayfa başına destek talebi sayısı.
+    -   `page`: (int, optional) Sayfa numarası.
+-   **Response**:
+    -   `data`: (array)
+    -   `links`: (object)
+    -   `meta`: (object)
+
+##### Store
+
+-   **Endpoint**: `POST /api/tickets`
+-   **Request Body**:
+    -   `title`: (string) Destek talebi başlığı.
+    -   `description`: (string) Destek talebi açıklaması.
+-   **Response**:
+    -   `message`: (string)
+    -   `data`: (object)
+
+##### Show
+
+-   **Endpoint**: `GET /api/tickets/{id}`
+-   **Response**:
+
+    -   `data`: (object)
+
+##### Update Status
+
+-   **Endpoint**: `PATCH /api/tickets/{id}/status`
+-   **Request Body**:
+    -   `status`: (string) Destek talebi durumu.
+-   **Response**:
+    -   `message`: (string)
+
+---
+
+## 💡 Teknoloji Açıklamaları (Redis & RabbitMQ)
+
+Bu projede, modern web uygulamalarının iki temel ihtiyacı olan hız ve verimlilik için Redis ve RabbitMQ kullanılmıştır.
+
+### Redis (Önbellekleme - Caching)
+
+* **Amaç:** Sıkça erişilen verileri (bu projede bilet detayları ve listeleri) veritabanı yerine çok daha hızlı olan RAM (hafıza) üzerinde tutmaktır. Bu sayede veritabanı yükü azalır ve API yanıt süreleri ciddi ölçüde kısalır.
+* **Kullanım:**
+    * `GET /api/tickets` (Liste) endpointinden  gelen başarılı yanıtlar, **60 saniye** süreyle Redis'te önbelleklenir.
+    * 60 saniye içinde aynı istek tekrar gelirse, sistem veritabanına hiç gitmeden veriyi doğrudan Redis'ten sunar.
+* **Önbellek Temizleme (Invalidation):**
+    * Verinin güncel kalması kritiktir. Bu nedenle, kullanıcı yeni bir bilet oluşturduğunda (`POST /api/tickets`) veya mevcut bir biletin durumunu güncellediğinde (`PATCH`), ilgili önbellek (cache) anahtarları otomatik olarak silinir.
+    * Bu sayede kullanıcı, bir değişiklik yaptıktan sonraki ilk `GET` isteğinde daima en güncel veriyi görür.
+
+### RabbitMQ (Asenkron İşlem Kuyruğu)
+
+* **Amaç:** Kullanıcının beklemesini gerektirmeyen, ancak yapılması gereken "ağır" veya "zaman alıcı" işlemleri (bu projede: loglama) ana işlemden ayırmaktır. Bu, API'nin kullanıcıya anında yanıt vermesini sağlar.
+* **Kullanım (Akış):**
+    1.  Kullanıcı bir biletin durumunu `PATCH /api/tickets/{id}/status` endpoint'i ile günceller.
+    2.  Sistem, değişikliği anında veritabanındaki `tickets` tablosuna yazar ve kullanıcıya "Başarılı" yanıtını döner (Hızlı yanıt).
+    3.  Aynı anda, bu değişikliği loglamak için bir `TicketStatusUpdated` olayı (Event) tetiklenir.
+    4.  Bu olayı dinleyen bir 'Listener', "Loglama İşini" (Queued Job) alır ve RabbitMQ kuyruğuna gönderir.
+    5.  Arka planda çalışan `php artisan queue:work` komutu (worker) bu işi kuyruktan alır ve `ticket_logs` tablosuna kaydı ekler.
+* **Sonuç:** Kullanıcı, loglama işleminin bitmesini bir saniye bile beklemez. Loglama işlemi (örn: `ticket_logs` tablosu kilitlendiği için) o an başarısız olsa bile, bu durum kullanıcının ana isteğini etkilemez ve işlem kuyrukta yeniden denenmek üzere bekler.
