@@ -22,6 +22,11 @@ class TicketObserver
         }
     }
 
+    public function deleted(Ticket $ticket): void
+    {
+        $this->removeTicketCaches();
+    }
+
     private function removeTicketCaches(): void
     {
         $keys = Redis::connection('cache')->keys('tickets:*');

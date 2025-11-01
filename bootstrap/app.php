@@ -9,6 +9,7 @@ use Illuminate\Foundation\Configuration\Middleware;
 use App\Http\Middleware\EnsureTicketOwner;
 use Illuminate\Http\Exceptions\ThrottleRequestsException;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -45,5 +46,11 @@ return Application::configure(basePath: dirname(__DIR__))
                 'message' => 'Çok fazla istek yaptınız. Lütfen biraz bekleyin.',
                 'retry_after' => $e->getHeaders()['Retry-After'] ?? null
             ], 429);
+        });
+
+        $exceptions->render(function (NotFoundHttpException $e): JsonResponse {
+            return response()->json([
+                'message' => "Kaynak bulunamadı."
+            ], 404);
         });
     })->create();

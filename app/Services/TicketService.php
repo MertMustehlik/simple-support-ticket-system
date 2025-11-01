@@ -30,7 +30,9 @@ class TicketService implements TicketInterface
 
     public function show(int $id): Ticket
     {
-        return Ticket::query()->with('user')->findOrFail($id);
+        return Cache::remember("tickets:{$id}", 60, function () use ($id) {
+            return Ticket::query()->with('user')->findOrFail($id);
+        });
     }
 
     public function updateStatus(int $id, string $status): bool
