@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Observers\TicketObserver;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -12,6 +13,8 @@ use App\Models\TicketLog;
 #[ObservedBy(TicketObserver::class)]
 class Ticket extends Model
 {
+    use HasFactory;
+    
     public const
         STATUS_OPEN = "open",
         STATUS_IN_PROGRESS = "in_progress",
