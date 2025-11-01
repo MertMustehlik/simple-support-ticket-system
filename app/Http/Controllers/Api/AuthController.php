@@ -11,12 +11,8 @@ use Illuminate\Http\JsonResponse;
 
 class AuthController extends Controller
 {
-    private AuthInterface $authInterface;
-
-    public function __construct(AuthInterface $authInterface)
-    {
-        $this->authInterface = $authInterface;
-    }
+    public function __construct(private AuthInterface $authInterface)
+    {}
 
     public function register(RegisterRequest $request): JsonResponse
     {

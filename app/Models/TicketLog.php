@@ -9,20 +9,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class TicketLog extends Model
 {
     public const
-        CREATED = 'created',
-        UPDATED = 'updated',
-        STATUS_CHANGED = 'status_changed',
-        DELETED = 'deleted';
+        STATUS_CHANGED = 'status_changed';
 
-    protected $fillable = ['ticket_id', 'action', 'old_data', 'new_data'];
-
-    protected function casts(): array
-    {
-        return [
-            'old_data' => 'json',
-            'new_data' => 'json',
-        ];
-    }
+    protected $fillable = ['ticket_id', 'action', 'old_status', 'new_status'];
 
     public function ticket(): BelongsTo
     {

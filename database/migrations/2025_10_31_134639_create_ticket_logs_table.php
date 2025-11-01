@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('ticket_logs', function (Blueprint $table) {
             $table->id();
             $table->foreignId('ticket_id')->constrained()->onDelete('cascade');
-            $table->enum('action', ['created', 'updated', 'status_changed', 'deleted']);
-            $table->json('old_data')->nullable();
-            $table->json('new_data')->nullable();
+            $table->enum('action', ['status_changed']);
+            $table->string('old_status')->nullable();
+            $table->string('new_status')->nullable();
             $table->timestamps();
         });
     }
